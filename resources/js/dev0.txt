@@ -1,0 +1,63 @@
+jadi saya sedang membuat project web atau app menggunakan InertiaJS yaitu laravel backend dan juga react frontend, aku ingin memberikan informasi beberapa hal terutama yang sedang saya kerjakan sekarang adalah fitur admin.
+
+routes/web.php
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::prefix('admin')->group(function () {
+        Route::get('/', function () {
+            return Inertia::render('admins/dashboard');
+        })->name('dashboard');
+        Route::resource('users', AdminUserController::class);
+        Route::resource('contacts', AdminContactController::class);
+        Route::resource('address', AdminAddressController::class);
+        // Route::resource('feedbacks', AdminFeedbackController::class);
+        Route::resource('transactions', AdminTransactionController::class);
+        Route::resource('categories', AdminCategoryController::class);
+        Route::resource('items', AdminItemController::class);
+        Route::resource('ratings', AdminRatingController::class);
+        Route::resource('details', AdminTransactionDetailController::class);
+    });
+});
+
+resources/js/pages/admins
+dan saya mengerjakan semua folder yang ada disini:
+```
+└── 📁admins
+    └── 📁address
+        └── columns.tsx
+        └── index.tsx
+    └── 📁categories
+        └── columns.tsx
+        └── create.tsx
+        └── edit.tsx
+        └── index-with-empty-state.tsx
+        └── index-with-generic.tsx
+        └── index.tsx
+    └── 📁contacts
+        └── columns.tsx
+        └── index.tsx
+    └── 📁products
+        └── columns.tsx
+        └── create.tsx
+        └── edit.tsx
+        └── index.tsx
+    └── 📁settings
+        └── appearance.tsx
+        └── password.tsx
+        └── profile.tsx
+    └── 📁users
+        └── columns.tsx
+        └── create.tsx
+        └── edit.tsx
+        └── index.tsx
+    └── dashboard.tsx
+```
+
+bisakah kamu optimasi untuk CRUD users, contacts, dan juga address?
+beberapa hal yang saya inginkan adalah:
+1.) ada 3 users yang di delete menggunakan soft delete, saya ingin untuk column action bagian delete dan user yang memiliki status delete, diganti button restore untuk bisa di restrore supaya tidak terdelete lagi status dia.
+2.) saya juga ingin untuk menambahkan filters sorting pada data table seperti "hanya menampilkan role admin atau courier atau client" dan juga sortir lainnya sesuai kolom yang ada.
+3.) waktu ketika select all disini pada data table belum bisa di delete sesuai selectnya, tambahkan fitur tersebut!
+4.) pada pagination aku ingin kamu melakukan modifikasi untuk supaya pages tidak hanya melompat satu halaman atau halaman paling depan dan akhir, tapi bisa memilih untuk lompat ke opsi pages sesuai keinginnan.
+5.) mungkin kamu bisa melakukan optimasi pada input pencarian karena disini hanya bisa mencari menggunakan 1 search key.
+6.) halaman http://127.0.0.1:8000/admin/contacts menampilkan data yang kurang jelas, aku ingin supaya bisa menampilkan id dari pemilik contact tersebut dan jika di click kolom id nya akan masuk ke http://127.0.0.1:8000/admin/users dan menghighlight row dari pemilik kontak tersebut begitu juga dengan address.
+

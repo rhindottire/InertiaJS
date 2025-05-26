@@ -1,4 +1,4 @@
-import { LucideIcon } from 'lucide-react';
+import { type LucideIcon } from 'lucide-react';
 import type { Config } from 'ziggy-js';
 
 export interface Auth {
@@ -37,7 +37,7 @@ export interface User {
   email_verified_at: string | null;
   created_at: string;
   updated_at: string;
-  [key: string]: unknown; // This allows for additional properties...
+  [key: string]: unknown;
 }
 
 export interface Contact {
@@ -45,14 +45,20 @@ export interface Contact {
   user_id: number;
   name: string;
   phone: string;
-  profile?: string;           // nullable di migration
+  profile?: string;
   gender: 'MAN' | 'WOMAN';
-  birthday: string;           // tanggal dalam format YYYY-MM-DD
-  favourite?: string[];       // json di-DB, map ke array
-  created_at: string;         // ISO timestamp
-  updated_at: string;         // ISO timestamp
-  deleted_at?: string | null; // softDeletes
-  [key: string]: unknown;     // untuk properti tambahan
+  birthday: string;
+  favourite?: string[];
+  created_at: string;
+  updated_at: string;
+  deleted_at?: string | null;
+  // Extended data for cross-reference
+  user?: {
+    id: number;
+    username: string;
+    email: string;
+  };
+  [key: string]: unknown;
 }
 
 export interface Address {
@@ -63,8 +69,40 @@ export interface Address {
   province: string;
   city: string;
   street: string;
-  more?: string;          // nullable di migration
+  more?: string;
   created_at: string;
   updated_at: string;
+  // Extended data for cross-reference
+  contact?: {
+    id: number;
+    name: string;
+    user_id: number;
+    user?: {
+      id: number;
+      username: string;
+      email: string;
+    };
+  };
   [key: string]: unknown;
+}
+
+// Additional types for pagination and filtering
+export interface PaginatedData<T> {
+  data: T[];
+  current_page: number;
+  last_page: number;
+  per_page: number;
+  total: number;
+  from: number;
+  to: number;
+}
+
+export interface FilterOptions {
+  role?: string;
+  status?: string;
+  deleted_status?: string;
+  gender?: string;
+  search?: string;
+  sort_by?: string;
+  sort_order?: 'asc' | 'desc';
 }

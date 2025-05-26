@@ -45,9 +45,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
             return Inertia::render('admins/dashboard');
         })->name('dashboard');
         Route::resource('users', AdminUserController::class);
+        Route::post('users/{id}/restore', [AdminUserController::class, 'restore'])->name('users.restore');
+        Route::post('users/bulk-delete', [AdminUserController::class, 'bulkDelete'])->name('users.bulk-delete');
+        Route::post('users/bulk-restore', [AdminUserController::class, 'bulkRestore'])->name('users.bulk-restore');
         Route::resource('contacts', AdminContactController::class);
+        Route::post('contacts/bulk-delete', [AdminContactController::class, 'bulkDelete'])->name('contacts.bulk-delete');
         Route::resource('address', AdminAddressController::class);
-        // Route::resource('feedbacks', AdminFeedbackController::class);
+        Route::post('address/bulk-delete', [AdminAddressController::class, 'bulkDelete'])->name('address.bulk-delete');
         Route::resource('transactions', AdminTransactionController::class);
         Route::resource('categories', AdminCategoryController::class);
         Route::resource('items', AdminItemController::class);
@@ -66,12 +70,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
             echo "Ini halaman kurir ya cantik!";
         });
     });
+
     Route::get('/pesanan-saya', function () {
-    return Inertia::render('PesananSaya', [
-        'user' => ['name' => 'Seinal Arifin'],
-        'cartItems' => ['count' => 23, 'total' => 100000],
-    ]);
-});
+        return Inertia::render('PesananSaya', [
+            'user' => ['name' => 'Seinal Arifin'],
+            'cartItems' => ['count' => 23, 'total' => 100000],
+        ]);
+    });
 });
 
 

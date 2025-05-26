@@ -9,14 +9,16 @@ import AppLayout from '@/components/layouts/app-layout';
 
 const breadcrumbs: BreadcrumbItem[] = [{
   title: 'Contacts',
-  href: '/contacts',
+  href: '/admin/contacts',
 }];
 
-export default function Users() {
-  const { contacts, success, error } = usePage<
-    SharedData & { contacts: { data: Contact[] } }
-  >().props;
-  console.log(contacts);
+interface ContactsPageProps extends SharedData {
+  contacts: { data: Contact[] };
+  filters: Record<string, string | undefined>;
+}
+
+export default function Contacts() {
+  const { contacts, filters, success, error } = usePage<ContactsPageProps>().props;
 
   useEffect(() => {
     if (success) toast.success(success as string);
@@ -25,18 +27,27 @@ export default function Users() {
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
-      <Head title="Contacts" />
+      <Head title="Contacts Management" />
       <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-        <div className="border-sidebar-border/70 dark:border-sidebar-border relative min-h-[100vh] flex-1 overflow-hidden rounded-xl border md:min-h-min">
-          <DataTable<Contact, string>
-            columns={columns}
-            data={contacts.data}
-            searchKey="name"
-            create="contact"
-          />
-          {/* <BorderBeam size={300} duration={10} /> */}
+        <div className="space-y-4">
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight">Contacts Management</h1>
+            <p className="text-muted-foreground">
+              Manage user contact information. Click on user links to navigate to the user management page.
+            </p>
+          </div>
+          
+          <div className="border-sidebar-border/70 dark:border-sidebar-border relative min-h-[100vh] flex-1 overflow-hidden rounded-xl border md:min-h-min">
+            <DataTable<Contact, string>
+              columns={columns}
+              data={contacts.data}
+              create="contact"
+              filters={filters}
+              resourceName="contact"
+            />
+          </div>
         </div>
       </div>
     </AppLayout>
   );
-};
+}
