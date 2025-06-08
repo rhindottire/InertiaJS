@@ -7,16 +7,16 @@ import AppLayout from '@/components/layouts/app-layout';
 import { DataTable } from '@/components/ui/data-table';
 import { columns } from './columns';
 
-const breadcrumbs: BreadcrumbItem[] = [
-  {
-    title: 'Users',
-    href: '/users',
-  },
-];
-
 export default function Users() {
   const { users, success, error } = usePage<SharedData & { users: { data: User[] } }>().props;
   console.log(users);
+
+  const breadcrumbs: BreadcrumbItem[] = [
+    {
+      title: 'Users',
+      href: route('users.index'),
+    },
+  ];
 
   useEffect(() => {
     if (success) toast.success(success as string);

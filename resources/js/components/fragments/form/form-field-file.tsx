@@ -1,6 +1,6 @@
-import type React from 'react';
 import { cn } from '@/lib/utils';
 import { ImageIcon, X } from 'lucide-react';
+import type React from 'react';
 import { useEffect, useRef, useState } from 'react';
 
 import { Button } from '@/components/elements/button';
@@ -14,14 +14,7 @@ interface ImagePreviewInputProps {
   className?: string;
 }
 
-export function ImagePreviewInput({
-  htmlFor,
-  label,
-  currentImageUrl,
-  onChange,
-  error,
-  className,
-}: ImagePreviewInputProps) {
+export function ImagePreviewInput({ htmlFor, label, currentImageUrl, onChange, error, className }: ImagePreviewInputProps) {
   const [preview, setPreview] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -115,28 +108,13 @@ export function ImagePreviewInput({
         {preview ? (
           <div className="relative w-full">
             <div className="relative mx-auto max-h-64 max-w-full overflow-hidden rounded-md">
-              <img
-                src={preview || '/placeholder.svg'}
-                alt="Preview"
-                className="h-auto max-h-64 w-auto max-w-full object-contain"
-              />
-              <Button
-                type="button"
-                size="icon"
-                variant="destructive"
-                className="absolute top-2 right-2 h-6 w-6"
-                onClick={clearImage}
-              >
+              <img src={preview || '/placeholder.svg'} alt="Preview" className="h-auto max-h-64 w-auto max-w-full object-contain" />
+              <Button type="button" size="icon" variant="destructive" className="absolute top-2 right-2 h-6 w-6" onClick={clearImage}>
                 <X className="h-4 w-4" />
               </Button>
             </div>
             <div className="mt-2 text-center">
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={triggerFileInput}
-              >
+              <Button type="button" variant="outline" size="sm" onClick={triggerFileInput}>
                 Change Image
               </Button>
             </div>
@@ -146,32 +124,15 @@ export function ImagePreviewInput({
             <div className="bg-muted mb-3 rounded-full p-3">
               <ImageIcon className="text-muted-foreground h-6 w-6" />
             </div>
-            <p className="mb-1 text-sm font-medium">
-              Drag and drop your image here or click to browse
-            </p>
-            <p className="text-muted-foreground text-xs">
-              Supports JPG, PNG, GIF up to 5MB
-            </p>
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              className="mt-4"
-              onClick={triggerFileInput}
-            >
+            <p className="mb-1 text-sm font-medium">Drag and drop your image here or click to browse</p>
+            <p className="text-muted-foreground text-xs">Supports JPG, PNG, GIF up to 5MB</p>
+            <Button type="button" variant="outline" size="sm" className="mt-4" onClick={triggerFileInput}>
               Select Image
             </Button>
           </div>
         )}
 
-        <input
-          id={htmlFor}
-          ref={fileInputRef}
-          type="file"
-          accept="image/*"
-          className="hidden"
-          onChange={handleFileChange}
-        />
+        <input id={htmlFor} ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
       </div>
 
       {error && <p className="text-destructive text-xs">{error}</p>}

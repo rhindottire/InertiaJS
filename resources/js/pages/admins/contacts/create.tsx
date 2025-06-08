@@ -25,6 +25,7 @@ import { Combobox } from '@/components/ui/combobox';
 import DatePicker from '@/components/ui/date-picker';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { getInitials } from '@/utils/user';
 
 export default function ContactsCreate() {
   const { users, success, error } = usePage<SharedData & { users: { data: UserType[] } }>().props;
@@ -127,27 +128,12 @@ export default function ContactsCreate() {
     if (error) toast.error(error as string);
   }, [success, error]);
 
-  // Helper function to get initials
-  const getInitials = (name: string): string => {
-    if (!name) return 'NC';
-    return name
-      .split(' ')
-      .map((word) => word.charAt(0))
-      .join('')
-      .toUpperCase()
-      .slice(0, 2);
-  };
-
-  // Prepare user options for combobox
   const userOptions = users.data.map((user) => ({
     value: String(user.id),
     label: user.username,
     description: `${user.email} • ${user.role}`,
     avatar: user.avatar || undefined,
   }));
-
-  // Get selected user info
-  // const selectedUser = users.data.find((user) => String(user.id) === String(data.user_id))
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>

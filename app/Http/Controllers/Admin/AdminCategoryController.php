@@ -29,7 +29,6 @@ class AdminCategoryController extends Controller {
     }
 
     public function store(StoreCategoryRequest $request) {
-        // dd($request->all());
         try {
             $validated = $request->validated();
 

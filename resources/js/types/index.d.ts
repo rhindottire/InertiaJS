@@ -5,6 +5,28 @@ export interface Auth {
   user: User;
 }
 
+type BadgeVariant = VariantProps<typeof badgeVariants>['variant'];
+
+export interface BadgeConfig {
+  label: string;
+  variant: BadgeVariant;
+  icon?: LucideIcon;
+  description?: string;
+}
+
+export type RoleConfig = BadgeConfig;
+export type StatusConfig = BadgeConfig;
+
+export type Role = 'ADMIN' | 'COURIER' | 'CLIENT'
+export type Status = 'ACTIVE' | 'INACTIVE'
+
+export interface TabsItem {
+  title: string;
+  description: string;
+  image: string;
+  icon: React.ElementType;
+}
+
 export interface BreadcrumbItem {
   href: string;
   title: string;
@@ -31,6 +53,7 @@ export interface SharedData {
 
 export interface User {
   id: number;
+  google_id: number;
   email: string;
   username: string;
   avatar?: string;

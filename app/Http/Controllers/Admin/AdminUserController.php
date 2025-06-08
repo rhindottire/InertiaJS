@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Log;
 class AdminUserController extends Controller {
     public function index() {
         $users = User::withTrashed()->with('contacts')->get();
-
         return Inertia::render('admins/users/index', [
             'users' => UserResource::collection($users),
             'success' => session('success'),
@@ -35,11 +34,14 @@ class AdminUserController extends Controller {
             if ($validated['password'] != $request['password_confirmation']) {
                 return redirect()->back()->with('error', 'Passwords do not match.');
             }
-
             $validated['password'] = bcrypt($validated['password']);
 
-            User::create($validated);
+            if ($request->hasFile('avatar')) {
+                $avatar = $request->file('avatar')->store('user', 'public');
+                $validated['avatar'] = $avatar;
+            }
 
+            User::create($validated);
             return redirect()->route('users.index')->with('success', 'User created successfully.');
         } catch (\Exception $e) {
             Log::error($e->getMessage());
@@ -70,8 +72,12 @@ class AdminUserController extends Controller {
         try {
             $validated = $request->validated();
 
-            $user->update($validated);
+            if ($request->hasFile('avatar')) {
+                $avatar = $request->file('avatar')->store('user', 'public');
+                $validated['avatar'] = $avatar;
+            }
 
+            $user->update($validated);
             return redirect()->route('users.index')->with('success', 'User updated successfully.');
         } catch (\Exception $e) {
             Log::error($e->getMessage());
@@ -98,7 +104,6 @@ class AdminUserController extends Controller {
 
             if ($user->trashed()) {
                 $user->restore();
-
                 return redirect()->route('users.index')->with('success', 'User restored successfully.');
             }
 

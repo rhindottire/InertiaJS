@@ -36,6 +36,7 @@ import CardHeader from "@/components/fragments/card/card-header"
 import CardTitle from "@/components/fragments/card/card-title"
 import CardDescription from "@/components/fragments/card/card-description"
 import CardContent from "@/components/fragments/card/card-content"
+import { getInitials } from "@/utils/user"
 
 export default function UsersShow() {
   const { user, success, error } = usePage<SharedData & { user: { data: UserType } }>().props
@@ -55,16 +56,6 @@ export default function UsersShow() {
     if (success) toast.success(success as string)
     if (error) toast.error(error as string)
   }, [success, error])
-
-  // Helper function to get initials
-  const getInitials = (name: string): string => {
-    return name
-      .split(" ")
-      .map((word) => word.charAt(0))
-      .join("")
-      .toUpperCase()
-      .slice(0, 2)
-  }
 
   // Helper function to render role badge
   const getRoleBadge = (role: string) => {
@@ -144,6 +135,7 @@ export default function UsersShow() {
   }
 
   const isDeleted = !!user.data.deleted_at
+  // const img = preview?.startsWith('https') ? preview : '/storage/' + preview;
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
@@ -176,19 +168,6 @@ export default function UsersShow() {
                   </div>
                 </div>
               </div>
-
-              {/* <div className="flex items-center gap-2">
-                {isDeleted ? (
-                  <>
-                    <RestoreModal resourceName="user" id={user.data.id} />
-                  </>
-                ) : (
-                  <>
-                    <EditButton endpoint="user" id={String(user.data.id)} />
-                    <DeleteModal resourceName="user" id={user.data.id} />
-                  </>
-                )}
-              </div> */}
             </div>
 
             {isDeleted && (
@@ -261,7 +240,6 @@ export default function UsersShow() {
                     </CardContent>
                   </Card>
 
-                  {/* Permissions & Status */}
                   <Card className="border-muted">
                     <CardHeader className="pb-3">
                       <CardTitle className="text-lg flex items-center gap-2">

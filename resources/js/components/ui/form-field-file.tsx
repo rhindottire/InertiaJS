@@ -258,5 +258,5 @@ export function ImagePreviewInput({
         {error && <p className="text-destructive text-xs">{error}</p>}
       </CardHeader>
     </Card>
-  );
+  )
 }
