@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Log;
 
 class AdminCategoryController extends Controller {
     public function index() {
-        $categories = Category::all();
+        $categories = Category::with('items')->get();
 
         return Inertia::render('admins/categories/index', [
             'categories' => CategoryResource::collection($categories),
@@ -29,7 +29,6 @@ class AdminCategoryController extends Controller {
     }
 
     public function store(StoreCategoryRequest $request) {
-        // dd($request->all());
         try {
             $validated = $request->validated();
 
@@ -47,11 +46,11 @@ class AdminCategoryController extends Controller {
         }
     }
 
-    public function show(Category $category) {
-        $category->all();
+    public function show($id) {
+        $category = Category::with('items')->findOrFail($id);
 
         return Inertia::render('admins/categories/show', [
-            'categories' => new CategoryResource($category),
+            'category' => new CategoryResource($category),
             'success' => session('success'),
             'error' => session('error'),
         ]);

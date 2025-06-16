@@ -1,11 +1,11 @@
 import { NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
 import {
-  BadgeDollarSign,
+  // BadgeDollarSign,
   BookOpen,
   BookUser,
   Box,
-  ChartBarStacked,
+  // ChartBarStacked,
   CircleUser,
   Contact,
   Folder,
@@ -49,20 +49,20 @@ const mainNavItems: NavItem[] = [
     ],
   },
   {
-    title: 'Categories',
-    href: route('categories.index'),
-    icon: ChartBarStacked,
-  },
-  {
     title: 'Products',
-    href: route('items.index'),
+    href: route('categories.index'),
     icon: Box,
   },
-  {
-    title: 'Transactions',
-    href: route('transactions.index'),
-    icon: BadgeDollarSign,
-  },
+  // {
+  //   title: 'Products',
+  //   href: route('items.index'),
+  //   icon: Box,
+  // },
+  // {
+  //   title: 'Transactions',
+  //   href: route('transactions.index'),
+  //   icon: BadgeDollarSign,
+  // },
   // {
   //   title: 'Feedback',
   //   href: '/feedbacks',

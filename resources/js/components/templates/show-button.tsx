@@ -11,3 +11,4 @@ export function ShowButton({ endpoint, id }: { endpoint: string; id: string }) {
     </Button>
   );
 }
+  

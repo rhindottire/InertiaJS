@@ -84,6 +84,7 @@ export interface Category {
   description: string;
   created_at: string;
   updated_at: string;
+  items: Item[]
 }
 
 export interface Item {
@@ -100,4 +101,5 @@ export interface Item {
   expired_at: date;
   created_at: string;
   updated_at: string;
+  category: Category;
 }
