@@ -108,14 +108,11 @@ const Homepage = () => {
   <p className="text-gray-500">Tidak ada produk populer.</p>
 )}
       </div>
-  
-      {/* ✅ Bagian Pencarian - hanya muncul kalau ada search */}
       {search && (
         <div id="search-results" className="mt-12 text-black">
           <h2 className="text-2xl font-bold mb-6">
             Hasil pencarian untuk "{search}" ({total} hasil)
           </h2>
-  
           {items.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {items.map((item) => (
