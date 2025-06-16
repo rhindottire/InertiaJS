@@ -14,10 +14,13 @@ use App\Http\Controllers\Courier\CourierController;
 use App\Http\Controllers\Client\ProfileControllerClient;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\Client\ClientOrderActionController;
+use App\Http\Controllers\Client\RatingController;
 use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\MidtransNotificationController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Transaction;
+
 use Inertia\Inertia;
 use App\Http\Controllers\HomeController;
 
@@ -55,7 +58,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         })->name('dashboard');
         Route::resource('users', AdminUserController::class);
         Route::resource('contacts', AdminContactController::class);
-        Route::patch('/contacts/{id}/restore', [AdminContactController::class, 'restore'])->name('contacts.restore');
+        Route::resource('address', AdminAddressController::class);
+        // Route::resource('feedbacks', AdminFeedbackController::class);
         Route::resource('transactions', AdminTransactionController::class);
         Route::resource('categories', AdminCategoryController::class);
         Route::resource('items', AdminItemController::class);
@@ -140,6 +144,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/cart/checkout', [CartController::class, 'checkout'])->name('cart.checkout'); //
         Route::get('/cart/data', [CartController::class, 'getCartData'])->name('cart.data'); //
 
+        Route::post('/cart/validate-voucher', [CartController::class, 'validateVoucher'])->name('cart.validateVoucher'); //
         // RUTE BARU untuk inisiasi pembayaran
         Route::get('/payment/initiate/{transaction}', function (Transaction $transaction) { //
             if (Auth::id() !== $transaction->client_id) { //
@@ -151,6 +156,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 'orderStatus' => $transaction->status, //
             ]);
         })->name('payment.initiate'); //
+
 
         Route::get('/orders/{transaction}', function (Transaction $transaction) { //
             if (Auth::id() !== $transaction->client_id) { //
@@ -176,6 +182,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/', [CourierController::class, 'index'])->name('courier.beranda');
         Route::patch('/update/{id}', [CourierController::class, 'update'])->name('courier.update');
 });
+ Route::middleware(['auth'])->group(function () { //
+    Route::post('/client/reviews', [RatingController::class, 'store'])->name('client.reviews.store');
+    Route::post('/ratings', [RatingController::class, 'store'])->name('ratings.store'); 
+});
+
+Route::post('/midtrans/webhook', [MidtransNotificationController::class, 'handle']);
+Route::get('/orders/{transaction}/status', [OrderController::class, 'checkStatus'])->name('client.orders.checkStatus');
 });
 if (file_exists(__DIR__ . '/settings.php')) {
     require __DIR__ . '/settings.php';
