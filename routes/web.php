@@ -46,6 +46,9 @@ Route::get('/Homepage', function () {
 Route::get('/Delivery', function () {
     return Inertia::render('Delivery');
 })->name('Delivery');
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/Homepage', [HomeController::class, 'index'])->name('homepage');
+
 
 Route::get('/menu', [CategoryController::class, 'index'])->name('client.menu.index');
 Route::get('/menu/{slug}', [CategoryController::class, 'show'])->name('client.menu.category');

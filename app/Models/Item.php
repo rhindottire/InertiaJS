@@ -26,7 +26,10 @@ class Item extends Model {
     public function ratings(): HasMany { // 1:M
         return $this->hasMany(Rating::class, 'rating_id', 'id');
     }
-
+    public function favorites()
+    {
+        return $this->hasMany(Favorite::class);
+    }
     protected $fillable= [
         'category_id',
         'name', 'unit', 'price', 'stock',
