@@ -10,20 +10,26 @@ use App\Http\Controllers\Admin\AdminTransactionDetailController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\Client\CartController;
-// use App\Http\Controllers\Client\ClientProfileController;
+use App\Http\Controllers\Courier\CourierController;
 use App\Http\Controllers\Client\ProfileControllerClient;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\Client\ClientOrderActionController;
+use App\Http\Controllers\Client\RatingController;
+use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\MidtransNotificationController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Transaction;
+
 use Inertia\Inertia;
+use App\Http\Controllers\HomeController;
 
 Route::get('/', function () {
     return redirect('/Homepage');
 });
 
-Route::get('/', [ItemController::class, 'index'])->name('homepage');
+// Route::get('/', [ItemController::class, 'index'])->name('homepage');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/offers', function () {
     return Inertia::render('offers');
@@ -52,9 +58,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         })->name('dashboard');
         Route::resource('users', AdminUserController::class);
         Route::resource('contacts', AdminContactController::class);
-        Route::patch('/contacts/{id}/restore', [AdminContactController::class, 'restore'])->name('contacts.restore');
         Route::resource('address', AdminAddressController::class);
-        Route::patch('/addresss/{id}/restore', [AdminAddressController::class, 'restore'])->name('address.restore');
+        // Route::resource('feedbacks', AdminFeedbackController::class);
         Route::resource('transactions', AdminTransactionController::class);
         Route::resource('categories', AdminCategoryController::class);
         Route::resource('items', AdminItemController::class);
@@ -95,9 +100,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 'historicalOrders' => [],
             ]);
         }
-
-        $activeStatuses = ['pending', 'paid', 'settlement', 'dikemas', 'dalam_pengiriman'];
-        $historicalStatuses = ['selesai', 'diterima', 'canceled', 'failed', 'expired', 'deny'];
+        
+        // Pesanan dianggap aktif jika statusnya belum 'selesai' atau status final negatif lainnya.
+        // 'diterima' dan 'dalam_pengiriman' termasuk status aktif.
+        $activeStatuses = ['pending', 'paid', 'settlement', 'dikemas', 'dalam_pengiriman', 'diterima'];
+        $historicalStatuses = ['selesai', 'canceled', 'failed', 'expired', 'deny'];
 
         $ordersQuery = Transaction::where('client_id', $user->id)
                             ->with([
@@ -126,9 +133,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
             'activeOrders' => $activeOrders,
             'historicalOrders' => $historicalOrders,
         ]);
-    })->name('pesanan-saya'); // Nama route tetap sama, middleware sudah dicakup oleh group
+    })->name('pesanan-saya');
 
-    Route::group(['as' => 'client.', 'prefix' => 'client'], function () {
+
+    Route::middleware(['auth'])->prefix('client')->name('client.')->group(function () {
         Route::get('/cart', [CartController::class, 'index'])->name('cart.index'); //
         Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add'); //
         Route::patch('/cart/update', [CartController::class, 'updateCart'])->name('cart.update'); //
@@ -136,6 +144,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/cart/checkout', [CartController::class, 'checkout'])->name('cart.checkout'); //
         Route::get('/cart/data', [CartController::class, 'getCartData'])->name('cart.data'); //
 
+        Route::post('/cart/validate-voucher', [CartController::class, 'validateVoucher'])->name('cart.validateVoucher'); //
         // RUTE BARU untuk inisiasi pembayaran
         Route::get('/payment/initiate/{transaction}', function (Transaction $transaction) { //
             if (Auth::id() !== $transaction->client_id) { //
@@ -147,6 +156,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 'orderStatus' => $transaction->status, //
             ]);
         })->name('payment.initiate'); //
+
 
         Route::get('/orders/{transaction}', function (Transaction $transaction) { //
             if (Auth::id() !== $transaction->client_id) { //
@@ -162,9 +172,24 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::get('/orders/{transaction}/receipt', [ClientOrderActionController::class, 'showReceipt'])->name('orders.receipt'); //
         Route::post('/orders/{transaction}/mark-received', [ClientOrderActionController::class, 'markAsReceived'])->name('orders.markReceived'); //
+
+        // Favorite routes
+        Route::post('/favorites/toggle', [FavoriteController::class, 'toggle'])
+            ->name('favorites.toggle');
     });
+
+    Route::prefix('courier')->group(function () {
+        Route::get('/', [CourierController::class, 'index'])->name('courier.beranda');
+        Route::patch('/update/{id}', [CourierController::class, 'update'])->name('courier.update');
+});
+ Route::middleware(['auth'])->group(function () { //
+    Route::post('/client/reviews', [RatingController::class, 'store'])->name('client.reviews.store');
+    Route::post('/ratings', [RatingController::class, 'store'])->name('ratings.store'); 
 });
 
+Route::post('/midtrans/webhook', [MidtransNotificationController::class, 'handle']);
+Route::get('/orders/{transaction}/status', [OrderController::class, 'checkStatus'])->name('client.orders.checkStatus');
+});
 if (file_exists(__DIR__ . '/settings.php')) {
     require __DIR__ . '/settings.php';
 }

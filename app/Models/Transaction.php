@@ -19,7 +19,7 @@ class Transaction extends Model
         'note',
         'payment_method',
         'status',
-        'delivery_option', // Added based on CartController.php
+        'delivery_status', // Added based on CartController.php
         'shipping_cost',   // Added based on CartController.php
     ];
 
@@ -57,5 +57,14 @@ class Transaction extends Model
         // Assumes your transactions table has an 'address_id' foreign key
         // and your addresses table is named 'addresses' (the model is 'Address')
         return $this->belongsTo(Address::class, 'address_id', 'id');
+    }
+
+    public function voucher(): BelongsTo
+    {
+        return $this->belongsTo(Voucher::class, 'voucher_id', 'id'); // Pastikan 'voucher_id' adalah foreign key yang benar
+    }
+    public function ratings(): HasMany // Add this relationship
+    {
+        return $this->hasMany(Rating::class, 'transaction_id', 'id'); //
     }
 }
